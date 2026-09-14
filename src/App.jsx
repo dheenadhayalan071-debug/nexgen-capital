@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Flame, Heart, Zap, Lock, Map, Trophy, LayoutDashboard, User, X, Check, Eye, Code, Link as LinkIcon, Send, Shield, ChevronRight, Skull } from 'lucide-react';
+import { Flame, Heart, Zap, Lock, Map, Trophy, LayoutDashboard, User, X, Check, Eye, Code, Link as LinkIcon, Send, Shield, ChevronRight, Skull, Loader2 } from 'lucide-react';
 
 // --- PROGRAMMATIC 28-DAY JOURNEY DATA ---
 const generateJourney = () => {
@@ -40,6 +40,7 @@ export default function App() {
   // --- PLATFORM STATE ---
   const [activeTab, setActiveTab] = useState('sprint');
   const [activeModal, setActiveModal] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New AI Loading State
 
   // Economy State
   const [hearts, setHearts] = useState(3);
@@ -176,32 +177,68 @@ export default function App() {
 
   const openBossLevel = () => {
     if (!node3Completed || bossCompleted) return;
-    setVcMessage("I don't fund private demos. Drop the public launch link below. LinkedIn, GitHub, or Google Docs only.");
+    setVcMessage("I don't fund private demos. Drop the public launch link below. Let's see what you actually shipped.");
     setVcStatus("neutral");
     setActiveModal('boss');
   };
 
-  const handleBossSubmit = (e) => {
+  // --- AI BACKEND INTEGRATION (The VC Brain) ---
+  const handleBossSubmit = async (e) => {
     e.preventDefault();
     const url = launchUrl.toLowerCase();
+    
+    // Basic frontend validation
     if (!url.startsWith("http")) {
       setVcMessage("That is not a URL. Don't play games with me. Heart removed.");
       setVcStatus('error');
       setHearts(h => Math.max(0, h - 1));
       return;
     }
-    const isWhitelisted = url.includes("linkedin.com") || url.includes("github.com") || url.includes("docs.google.com");
-    if (isWhitelisted) {
-      setVcMessage("Audit passed. The market can see you now. Welcome to the 1%.");
-      setVcStatus('success');
-      setCoins(c => c + 500);
-      setStreak(s => s + 1);
-      setBossCompleted(true);
-      setTimeout(() => setActiveModal(null), 3000);
-    } else {
-      setVcMessage("Invalid domain. Your launch must be public on an approved platform. Heart removed.");
+
+    setIsSubmitting(true);
+    setVcMessage("Analyzing your submission... The VC is reviewing.");
+    setVcStatus("neutral");
+
+    try {
+      // Connects to your live Render backend or local server
+      const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+      
+      const response = await fetch(`${API_BASE_URL}/api/execution/submit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          github_id: "builder_001", // Hardcoded for MVP
+          node_id: 28,
+          submission_data: url,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      // Update UI with the AI's exact response and the new economy state
+      setVcMessage(data.evaluation.vc_message);
+      setVcStatus(data.evaluation.passed ? 'success' : 'error');
+      
+      // Sync local state with Supabase state
+      setHearts(data.current_hearts);
+      setCoins(data.current_coins);
+      setStreak(data.current_streak);
+
+      if (data.evaluation.passed) {
+        setBossCompleted(true);
+        setTimeout(() => setActiveModal(null), 4000);
+      }
+
+    } catch (error) {
+      console.error(error);
+      setVcMessage("The VC dropped the call (Server error). Try again.");
       setVcStatus('error');
-      setHearts(h => Math.max(0, h - 1));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -671,10 +708,16 @@ export default function App() {
                     placeholder="https://linkedin.com/in/..." 
                     value={launchUrl}
                     onChange={(e) => setLaunchUrl(e.target.value)}
-                    className="bg-gray-950 border border-gray-700 rounded-xl p-4 text-white focus:outline-none focus:border-yellow-400 transition-colors"
+                    disabled={isSubmitting}
+                    className="bg-gray-950 border border-gray-700 rounded-xl p-4 text-white focus:outline-none focus:border-yellow-400 transition-colors disabled:opacity-50"
                   />
-                  <button type="submit" className="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-4 rounded-xl active:scale-95 transition-transform uppercase tracking-wider text-sm shadow-[0_0_20px_rgba(255,0,60,0.3)] flex items-center justify-center gap-2">
-                    <Send size={18} /> Face The VC
+                  <button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="w-full bg-red-600 hover:bg-red-500 disabled:bg-red-800 text-white font-bold py-4 rounded-xl active:scale-95 transition-transform uppercase tracking-wider text-sm shadow-[0_0_20px_rgba(255,0,60,0.3)] flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
+                    {isSubmitting ? 'Evaluating...' : 'Face The VC'}
                   </button>
                 </div>
               </form>
