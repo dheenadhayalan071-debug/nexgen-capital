@@ -626,30 +626,32 @@ export default function App() {
     <div className="min-h-screen bg-[#09090b] text-zinc-200 flex flex-col font-sans relative overflow-hidden">
       
       {/* ECONOMY HEADER */}
-      <header className="sticky top-0 z-40 bg-[#09090b]/80 backdrop-blur-xl border-b border-white/10 px-6 py-4 flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-zinc-900 border border-white/10 rounded flex items-center justify-center overflow-hidden">
-             <span className="text-[10px] font-bold font-mono text-zinc-400">VC</span>
+      <header className="sticky top-0 z-40 w-full bg-[#09090b]/80 backdrop-blur-xl border-b border-white/10 flex justify-center">
+        <div className="w-full max-w-md px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-zinc-900 border border-white/10 rounded flex items-center justify-center overflow-hidden">
+               <span className="text-[10px] font-bold font-mono text-zinc-400">VC</span>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-5 font-bold text-sm">
-          <div className="flex items-center gap-1.5 text-amber-500">
-            <Flame size={18} fill="currentColor" />
-            <motion.span key={streak} initial={{y: -10, opacity: 0}} animate={{y: 0, opacity: 1}}>{streak}</motion.span>
-          </div>
-          <div className="flex items-center gap-1.5 text-blue-400">
-            <Zap size={18} fill="currentColor" />
-            <motion.span key={coins} initial={{y: -10, opacity: 0}} animate={{y: 0, opacity: 1}}>{coins}</motion.span>
-          </div>
-          <div className="flex items-center gap-1.5 text-red-500">
-            <Heart size={18} fill={hearts > 0 ? "currentColor" : "none"} />
-            <motion.span key={hearts} initial={{scale: 1.5, opacity: 0}} animate={{scale: 1, opacity: 1}}>{hearts}</motion.span>
+          <div className="flex items-center gap-5 font-bold text-sm">
+            <div className="flex items-center gap-1.5 text-amber-500">
+              <Flame size={18} fill="currentColor" />
+              <motion.span key={streak} initial={{y: -10, opacity: 0}} animate={{y: 0, opacity: 1}}>{streak}</motion.span>
+            </div>
+            <div className="flex items-center gap-1.5 text-blue-400">
+              <Zap size={18} fill="currentColor" />
+              <motion.span key={coins} initial={{y: -10, opacity: 0}} animate={{y: 0, opacity: 1}}>{coins}</motion.span>
+            </div>
+            <div className="flex items-center gap-1.5 text-red-500">
+              <Heart size={18} fill={hearts > 0 ? "currentColor" : "none"} />
+              <motion.span key={hearts} initial={{scale: 1.5, opacity: 0}} animate={{scale: 1, opacity: 1}}>{hearts}</motion.span>
+            </div>
           </div>
         </div>
       </header>
 
       {/* MAIN CONTENT ROUTER */}
-      <main className="flex-1 overflow-y-auto pb-24 relative flex flex-col items-center pt-8">
+      <main className="flex-1 overflow-y-auto pb-24 relative flex flex-col items-center pt-8 w-full">
         <AnimatePresence mode="wait">
           <motion.div 
             key={activeTab}
@@ -657,7 +659,7 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="w-full"
+            className="w-full flex justify-center"
           >
             {renderContent()}
           </motion.div>
