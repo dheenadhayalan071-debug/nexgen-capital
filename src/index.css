@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+:root {
+  --color-electric: #fbff00;
+  --color-crimson: #ff003c;
+  --color-pitch: #0a0a0a;
+}
+
+body {
+  background-color: var(--color-pitch);
+  color: #ffffff;
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
