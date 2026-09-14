@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Flame, Heart, Zap, Lock, Map, Trophy, LayoutDashboard, User, X, Check, Eye, Code, Link as LinkIcon, Send, Shield, ChevronRight, Github } from 'lucide-react';
+import { Flame, Heart, Zap, Lock, Map, Trophy, LayoutDashboard, User, X, Check, Eye, Code, Link as LinkIcon, Send, Shield, ChevronRight } from 'lucide-react';
 
 export default function App() {
   // --- HIGH-LEVEL APP STATE ---
@@ -446,7 +446,7 @@ export default function App() {
                 onClick={handleAuth}
                 className="w-full bg-white text-black font-bold py-4 rounded-xl flex items-center justify-center gap-3 active:scale-95 transition-transform"
               >
-                <Github size={20} /> Authenticate via GitHub
+                <Lock size={20} /> Authenticate via GitHub
               </button>
               <p className="text-[10px] text-gray-600 mt-4 uppercase tracking-widest">Takes 1 Click • No Passwords</p>
             </div>
