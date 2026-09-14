@@ -1,5 +1,36 @@
 import React, { useState } from 'react';
-import { Flame, Heart, Zap, Lock, Map, Trophy, LayoutDashboard, User, X, Check, Eye, Code, Link as LinkIcon, Send, Shield, ChevronRight } from 'lucide-react';
+import { Flame, Heart, Zap, Lock, Map, Trophy, LayoutDashboard, User, X, Check, Eye, Code, Link as LinkIcon, Send, Shield, ChevronRight, Skull } from 'lucide-react';
+
+// --- PROGRAMMATIC 28-DAY JOURNEY DATA ---
+const generateJourney = () => {
+  const weeks = [
+    { id: 1, title: "Week 1: Direction", subtitle: "Confusion to Decision" },
+    { id: 2, title: "Week 2: Capability", subtitle: "Theory to Applied Skill" },
+    { id: 3, title: "Week 3: Execution", subtitle: "Learning to Building" },
+    { id: 4, title: "Week 4: Public Proof", subtitle: "Private Work to Reality" }
+  ];
+
+  const specificDays = {
+    1: "The Bleeding Neck",
+    2: "The 3-Second UI",
+    3: "Wiring the Engine",
+    28: "Boss: Public Ship"
+  };
+
+  return weeks.map((week, wIndex) => {
+    const days = [];
+    for (let i = 1; i <= 7; i++) {
+      const globalDay = (wIndex * 7) + i;
+      days.push({
+        id: globalDay,
+        title: specificDays[globalDay] || `Execution Sprint Day ${globalDay}`,
+      });
+    }
+    return { ...week, days };
+  });
+};
+
+const journey = generateJourney();
 
 export default function App() {
   // --- HIGH-LEVEL APP STATE ---
@@ -36,19 +67,16 @@ export default function App() {
     if (isCorrect) {
       setOnboardingStep('gate');
     } else {
-      // Brutal feedback if they fail the intro, but push them forward anyway to learn
       alert("Wrong. Dog dream translation is a scam. We have a lot of work to do. Let's get you in the system.");
       setOnboardingStep('gate');
     }
   };
 
   const handleAuth = () => {
-    // Simulates GitHub OAuth and transitions to the main platform
     setAppState('main');
   };
 
-
-  // --- MAIN APP LOGIC (Identical to previous build) ---
+  // --- MAIN APP LOGIC ---
   const cards = [
     { id: 1, text: "An AI app that recommends Netflix shows based on your current mood.", type: "vitamin" },
     { id: 2, text: "A digital habit tracker that awards badges for drinking water.", type: "vitamin" },
@@ -196,48 +224,97 @@ export default function App() {
       case 'sprint':
         return (
           <div className="w-full max-w-md px-6 flex flex-col items-center">
-            <div className="text-center mb-8">
+            <div className="text-center mb-6">
               <h2 className="text-2xl font-extrabold uppercase tracking-tight text-white">Zero-to-One Sprint</h2>
-              <p className="text-gray-500 text-sm mt-1">Prove you can execute.</p>
+              <p className="text-gray-500 text-sm mt-1">Survive the next 28 days.</p>
             </div>
 
-            <div className="relative flex flex-col items-center w-full py-8">
-              <div className="absolute top-0 bottom-12 w-6 bg-gray-900 -z-10 rounded-full opacity-50"></div>
+            {/* Render All 4 Weeks dynamically */}
+            {journey.map((week) => (
+              <div key={week.id} className="w-full relative flex flex-col items-center mt-12">
+                
+                {/* Week Header */}
+                <div className="w-full flex flex-col items-center mb-10 z-10">
+                  <div className="bg-gray-900 border border-gray-800 px-6 py-3 rounded-2xl text-center shadow-lg">
+                    <h3 className="text-lg font-black text-white uppercase tracking-widest">{week.title}</h3>
+                    <p className="text-yellow-500 text-[10px] font-mono uppercase tracking-widest mt-1">{week.subtitle}</p>
+                  </div>
+                </div>
 
-              {/* Node 1 */}
-              <div onClick={openNode1} className={`relative flex flex-col items-center -translate-x-16 cursor-pointer z-10 ${node1Completed ? 'opacity-50' : 'group'}`}>
-                <div className={`w-20 h-20 rounded-full border-4 flex items-center justify-center transform transition-transform active:scale-95 ${node1Completed ? 'bg-gray-900 border-yellow-400' : 'bg-yellow-400 border-black shadow-[0_0_20px_rgba(251,255,0,0.4)]'}`}>
-                  {node1Completed ? <Check size={32} className="text-yellow-400" /> : <Zap size={32} className="text-black" fill="currentColor" />}
-                </div>
-                <span className="mt-3 font-bold text-sm bg-black/80 px-2 rounded">The Bleeding Neck</span>
-              </div>
+                {/* Path container */}
+                <div className="relative flex flex-col items-center gap-10 w-full mb-8">
+                  {/* Vertical connecting line for the week */}
+                  <div className="absolute top-4 bottom-4 w-3 bg-gray-900 -z-10 rounded-full opacity-50"></div>
 
-              {/* Node 2 */}
-              <div onClick={openNode2} className={`relative flex flex-col items-center translate-x-16 -mt-4 transition-all duration-500 z-10 ${node1Completed ? 'cursor-pointer opacity-100' : 'opacity-50'} ${node2Completed ? 'opacity-50' : ''}`}>
-                <div className={`w-16 h-16 rounded-full border-4 flex items-center justify-center transform transition-transform ${!node1Completed ? 'bg-gray-900 border-black' : node2Completed ? 'bg-gray-900 border-yellow-400' : 'bg-yellow-400 border-black active:scale-95 shadow-[0_0_20px_rgba(251,255,0,0.4)]'}`}>
-                  {node2Completed ? <Check size={24} className="text-yellow-400" /> : !node1Completed ? <Lock size={24} className="text-gray-600" /> : <Eye size={24} className="text-black" />}
-                </div>
-                <span className={`mt-3 font-bold text-sm bg-black/80 px-2 rounded ${node1Completed ? 'text-white' : 'text-gray-500'}`}>The 3-Second UI</span>
-              </div>
-              
-              {/* Node 3 */}
-              <div onClick={openNode3} className={`relative flex flex-col items-center -translate-x-16 -mt-4 transition-all duration-500 z-10 ${node2Completed ? 'cursor-pointer opacity-100' : 'opacity-50'} ${node3Completed ? 'opacity-50' : ''}`}>
-                <div className={`w-16 h-16 rounded-full border-4 flex items-center justify-center transform transition-transform ${!node2Completed ? 'bg-gray-900 border-black' : node3Completed ? 'bg-gray-900 border-yellow-400' : 'bg-yellow-400 border-black active:scale-95 shadow-[0_0_20px_rgba(251,255,0,0.4)]'}`}>
-                  {node3Completed ? <Check size={24} className="text-yellow-400" /> : !node2Completed ? <Lock size={24} className="text-gray-600" /> : <Code size={24} className="text-black" />}
-                </div>
-                <span className={`mt-3 font-bold text-sm bg-black/80 px-2 rounded ${node2Completed ? 'text-white' : 'text-gray-500'}`}>Wiring the Engine</span>
-              </div>
+                  {week.days.map((day, dIndex) => {
+                    // Mathematical Zig-Zag Pattern
+                    const offsets = ['translate-x-0', 'translate-x-12', 'translate-x-20', 'translate-x-12', 'translate-x-0', '-translate-x-12', '-translate-x-20'];
+                    const offset = offsets[dIndex % offsets.length];
+                    const globalDay = day.id;
 
-              {/* Boss Level */}
-              <div onClick={openBossLevel} className={`relative flex flex-col items-center mt-8 transition-all duration-700 z-10 ${node3Completed ? 'opacity-100 cursor-pointer' : 'opacity-50'}`}>
-                <div className={`w-24 h-24 rounded-lg border-4 flex items-center justify-center transform transition-transform ${bossCompleted ? 'bg-yellow-400 border-black shadow-[0_0_40px_rgba(251,255,0,0.4)]' : node3Completed ? 'bg-red-600 border-red-400 shadow-[0_0_40px_rgba(255,0,60,0.6)] animate-pulse active:scale-95' : 'bg-red-950 border-red-500 shadow-[0_0_30px_rgba(255,0,60,0.2)]'}`}>
-                  {bossCompleted ? <Trophy size={40} className="text-black" /> : node3Completed ? <Zap size={32} className="text-white" fill="currentColor" /> : <Lock size={32} className="text-red-500" />}
+                    return (
+                      <div key={globalDay} className={`relative flex flex-col items-center group ${offset} transition-transform`}>
+                        
+                        {/* DAY 1 NODE */}
+                        {globalDay === 1 && (
+                          <div onClick={openNode1} className={`relative flex flex-col items-center ${node1Completed ? 'opacity-50' : 'cursor-pointer active:scale-95 z-10'}`}>
+                            {!node1Completed && <div className="absolute -top-4 bg-yellow-400 text-black text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider animate-bounce">Start</div>}
+                            <div className={`w-20 h-20 rounded-full border-4 flex items-center justify-center ${node1Completed ? 'bg-gray-900 border-yellow-400' : 'bg-yellow-400 border-black shadow-[0_0_30px_rgba(251,255,0,0.4)]'}`}>
+                              {node1Completed ? <Check size={32} className="text-yellow-400" /> : <Zap size={32} className="text-black" fill="currentColor" />}
+                            </div>
+                            <span className={`mt-3 font-bold text-sm bg-black/80 px-2 rounded ${node1Completed ? 'text-gray-400' : 'text-yellow-400'}`}>{day.title}</span>
+                          </div>
+                        )}
+
+                        {/* DAY 2 NODE */}
+                        {globalDay === 2 && (
+                          <div onClick={openNode2} className={`relative flex flex-col items-center ${!node1Completed ? 'opacity-50' : node2Completed ? 'opacity-50' : 'cursor-pointer active:scale-95 z-10'}`}>
+                            <div className={`w-16 h-16 rounded-full border-4 flex items-center justify-center ${!node1Completed ? 'bg-gray-900 border-black' : node2Completed ? 'bg-gray-900 border-yellow-400' : 'bg-yellow-400 border-black shadow-[0_0_20px_rgba(251,255,0,0.4)]'}`}>
+                              {node2Completed ? <Check size={24} className="text-yellow-400" /> : !node1Completed ? <Lock size={24} className="text-gray-600" /> : <Eye size={24} className="text-black" />}
+                            </div>
+                            <span className={`mt-3 font-bold text-sm bg-black/80 px-2 rounded text-center max-w-[100px] leading-tight ${node1Completed && !node2Completed ? 'text-yellow-400' : 'text-gray-500'}`}>{day.title}</span>
+                          </div>
+                        )}
+
+                        {/* DAY 3 NODE */}
+                        {globalDay === 3 && (
+                          <div onClick={openNode3} className={`relative flex flex-col items-center ${!node2Completed ? 'opacity-50' : node3Completed ? 'opacity-50' : 'cursor-pointer active:scale-95 z-10'}`}>
+                            <div className={`w-16 h-16 rounded-full border-4 flex items-center justify-center ${!node2Completed ? 'bg-gray-900 border-black' : node3Completed ? 'bg-gray-900 border-yellow-400' : 'bg-yellow-400 border-black shadow-[0_0_20px_rgba(251,255,0,0.4)]'}`}>
+                              {node3Completed ? <Check size={24} className="text-yellow-400" /> : !node2Completed ? <Lock size={24} className="text-gray-600" /> : <Code size={24} className="text-black" />}
+                            </div>
+                            <span className={`mt-3 font-bold text-sm bg-black/80 px-2 rounded text-center max-w-[100px] leading-tight ${node2Completed && !node3Completed ? 'text-yellow-400' : 'text-gray-500'}`}>{day.title}</span>
+                          </div>
+                        )}
+
+                        {/* DAY 28 BOSS NODE */}
+                        {globalDay === 28 && (
+                          <div onClick={openBossLevel} className={`relative flex flex-col items-center mt-4 ${!node3Completed ? 'opacity-50' : 'cursor-pointer active:scale-95 z-10'}`}>
+                            <div className={`w-24 h-24 rounded-2xl border-4 flex items-center justify-center ${bossCompleted ? 'bg-yellow-400 border-black shadow-[0_0_40px_rgba(251,255,0,0.4)]' : node3Completed ? 'bg-red-600 border-red-400 shadow-[0_0_40px_rgba(255,0,60,0.6)] animate-pulse' : 'bg-red-950 border-red-500 shadow-[0_0_30px_rgba(255,0,60,0.2)]'}`}>
+                              {bossCompleted ? <Trophy size={40} className="text-black" /> : node3Completed ? <Zap size={32} className="text-white" fill="currentColor" /> : <Skull size={40} className="text-red-500" />}
+                            </div>
+                            <span className={`mt-4 font-extrabold uppercase tracking-widest text-sm bg-black/80 px-2 rounded text-center ${bossCompleted ? 'text-yellow-400' : 'text-red-500'}`}>{day.title}</span>
+                          </div>
+                        )}
+
+                        {/* DEFAULT LOCKED NODES (Days 4 - 27) */}
+                        {globalDay > 3 && globalDay < 28 && (
+                           <div className="relative flex flex-col items-center opacity-50">
+                             <div className="w-16 h-16 rounded-full bg-gray-900 border-4 border-black flex items-center justify-center shadow-inner">
+                               <Lock size={24} className="text-gray-600" />
+                             </div>
+                             <span className="mt-2 font-bold text-xs text-gray-600 text-center max-w-[100px] leading-tight bg-black/80 px-1 rounded">{day.title}</span>
+                           </div>
+                        )}
+
+                      </div>
+                    );
+                  })}
                 </div>
-                <span className={`mt-4 font-extrabold uppercase tracking-widest text-sm bg-black/80 px-2 rounded ${bossCompleted ? 'text-yellow-400' : 'text-red-500'}`}>Boss: Public Ship</span>
               </div>
-            </div>
+            ))}
           </div>
         );
+
       case 'leaderboard':
         return (
           <div className="w-full max-w-md px-6 flex flex-col items-center animate-in fade-in duration-300">
@@ -270,6 +347,7 @@ export default function App() {
             </div>
           </div>
         );
+
       case 'portfolio':
         return (
           <div className="w-full max-w-md px-6 flex flex-col items-center animate-in fade-in duration-300">
@@ -291,6 +369,7 @@ export default function App() {
             </div>
           </div>
         );
+
       case 'profile':
         return (
           <div className="w-full max-w-md px-6 flex flex-col items-center animate-in fade-in duration-300">
@@ -367,7 +446,6 @@ export default function App() {
   if (appState === 'onboarding') {
     return (
       <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-6 relative overflow-hidden">
-        
         {/* Background glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-yellow-500/5 blur-[120px] rounded-full pointer-events-none"></div>
 
